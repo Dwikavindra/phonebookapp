@@ -15,6 +15,7 @@ type AddContactProps = {
 };
 function ModalAddContact(props: AddContactProps) {
   let individualContact: Contact = {
+    id: Math.floor(Math.random() * 1000),
     name: " ",
     phoneNumber: " ",
   };

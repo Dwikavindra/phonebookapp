@@ -10,7 +10,10 @@ function ListContactTile(props: contactLists) {
     <div>
       {props.contactList.map((element) => {
         return (
-          <div className="flex flex-row bg-gray-300 border-2 ml-5 mr-5 ">
+          <div
+            className="flex flex-row bg-gray-300 border-2 ml-5 mr-5 "
+            key={element.id}
+          >
             <div className="flex flex-col">
               <h2>{element.name}</h2>
               <h3>{element.phoneNumber}</h3>

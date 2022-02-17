@@ -13,7 +13,8 @@ function App() {
     useState<string>("invisible");
   const [contacts, setAddContacts] = useState<Contact[]>([]);
   function setContactAdd(contact: Contact) {
-    let newContacts = contacts;
+    let newContacts = [...contacts];
+
     newContacts.push(contact);
     setAddContacts(newContacts);
     console.log(contacts);
