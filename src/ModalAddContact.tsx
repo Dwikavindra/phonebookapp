@@ -29,7 +29,7 @@ function ModalAddContact(props: AddContactProps) {
   //   console.log("From ModalAddContact " + props.showModalContactAdd);
   return (
     <div
-      className={`${props.showModalContactAdd} container bg-black bg-opacity-50 absolute inset-0 flex justify-center`}
+      className={`${props.showModalContactAdd} bg-black bg-opacity-50 absolute inset-0 flex justify-center w-screen `}
     >
       <div className=" flex flex-col bg-gray-100 mt-10 h-96">
         <div className=" flex flex-row">
@@ -67,6 +67,8 @@ function ModalAddContact(props: AddContactProps) {
               console.log(name);
               console.log(phoneNumber);
               AddContact(individualContact, name, phoneNumber);
+              setName(" ");
+              setPhoneNumber(" ");
             }}
           >
             <h3 className="mt-1  ml-3 mr-4 mb-1 text-xs"> Add Contact</h3>

@@ -43,7 +43,10 @@ function App() {
           <h3 className="mt-1  ml-3 mr-4 mb-1 text-xs"> + Add Contact</h3>
         </button>
       </div>
-      <ListContactTile contactList={contacts}></ListContactTile>
+      <ListContactTile
+        contactList={contacts}
+        setContactRemove={setAddContacts}
+      ></ListContactTile>
       <ModalAddContact
         showModalContactAdd={showModalContactAdd}
         setShowModalContactAdd={() => handleShowModalContactAdd()}

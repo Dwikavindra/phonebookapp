@@ -4,8 +4,14 @@ import Contact from "./Contact";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 interface contactLists {
   contactList: Contact[];
+  setContactRemove: Function;
 }
 function ListContactTile(props: contactLists) {
+  function removeContact(id: number) {
+    let oldArray: Contact[] = [...props.contactList];
+    let newArray: Contact[] = oldArray.filter((items) => items.id != id);
+    props.setContactRemove(newArray);
+  }
   return (
     <div>
       {props.contactList.map((element) => {
@@ -19,7 +25,10 @@ function ListContactTile(props: contactLists) {
               <h3>{element.phoneNumber}</h3>
             </div>
             <div className="flex w-screen justify-end items-end">
-              <button className="ml-60 self-end items-end ">
+              <button
+                className="ml-60 self-end items-end "
+                onClick={() => removeContact(element.id)}
+              >
                 <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
               </button>
             </div>
