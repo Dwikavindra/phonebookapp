@@ -16,8 +16,8 @@ type AddContactProps = {
 function ModalAddContact(props: AddContactProps) {
   let individualContact: Contact = {
     id: Math.floor(Math.random() * 1000),
-    name: " ",
-    phoneNumber: " ",
+    name: "",
+    phoneNumber: "",
   };
   function AddContact(contact: Contact, name: string, phone: string) {
     individualContact.name = name;
@@ -26,7 +26,6 @@ function ModalAddContact(props: AddContactProps) {
   }
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  //   console.log("From ModalAddContact " + props.showModalContactAdd);
   return (
     <div
       className={`${props.showModalContactAdd} bg-black bg-opacity-50 absolute inset-0 flex justify-center w-screen `}
@@ -57,18 +56,15 @@ function ModalAddContact(props: AddContactProps) {
           value={phoneNumber}
           onChange={(e) => {
             setPhoneNumber(e.target.value);
-            console.log(phoneNumber);
           }}
         ></input>
         <div className="flex justify-center items-center">
           <button
             className=" mt-10 flex justify-center items-center border-2 bg-blue-500 text-white rounded-lg border-transparent"
             onClick={() => {
-              console.log(name);
-              console.log(phoneNumber);
               AddContact(individualContact, name, phoneNumber);
-              setName(" ");
-              setPhoneNumber(" ");
+              setName("");
+              setPhoneNumber("");
             }}
           >
             <h3 className="mt-1  ml-3 mr-4 mb-1 text-xs"> Add Contact</h3>

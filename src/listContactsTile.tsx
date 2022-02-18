@@ -4,13 +4,15 @@ import Contact from "./Contact";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 interface contactLists {
   contactList: Contact[];
-  setContactRemove: Function;
+  setContactRemove1: Function;
+  setContactRemove2: Function;
 }
 function ListContactTile(props: contactLists) {
   function removeContact(id: number) {
     let oldArray: Contact[] = [...props.contactList];
     let newArray: Contact[] = oldArray.filter((items) => items.id != id);
-    props.setContactRemove(newArray);
+    props.setContactRemove1(newArray);
+    props.setContactRemove2(newArray);
   }
   return (
     <div>

@@ -15,16 +15,15 @@ function App() {
   const [searchcontacts, setSearchContacts] = useState<Contact[]>([
     ...contacts,
   ]);
+  // const [disableSetContactAdd, setDisableContactAdd] = useState<boolean>(false);
   const [inputForm, setInputForm] = useState<string>("");
   const isNumeric = (val: string): boolean => {
     return !isNaN(Number(val));
   };
   function setContactAdd(contact: Contact) {
     let newContacts = [...contacts];
-
     newContacts.push(contact);
     setAddContacts(newContacts);
-    console.log(contacts);
   }
   function handleShowModalContactAdd() {
     showModalContactAdd == "invisible"
@@ -32,16 +31,20 @@ function App() {
       : setShowModalContactAdd("invisible");
   }
   function search(listofcontact: Contact[]) {
-    let newlistsofcontacts: Contact[] = listofcontact.filter((val) => {
-      if (inputForm == "") {
-        return val;
-      } else if (val.name.toLowerCase().includes(inputForm.toLowerCase())) {
-        return val;
-      }
-      if (isNumeric(inputForm[0]) == true) {
-        return val.phoneNumber.toLowerCase().includes(inputForm.toLowerCase());
-      }
-    });
+    let newlistsofcontacts: Contact[] = [
+      ...listofcontact.filter((val) => {
+        if (inputForm == "") {
+          return val;
+        } else if (
+          val.name.toLowerCase().includes(inputForm.toLowerCase()) == true
+        ) {
+          return val;
+        }
+        if (isNumeric(inputForm[0]) == true) {
+          return val.phoneNumber.includes(inputForm.toLowerCase());
+        }
+      }),
+    ];
     setSearchContacts(newlistsofcontacts);
   }
 
@@ -56,7 +59,6 @@ function App() {
         <button
           onClick={() => {
             setShowModalContactAdd("visible");
-            console.log(showModalContactAdd);
           }}
           className=" mt-2 border-2 bg-blue-500 text-white rounded-sm border-transparent"
         >
@@ -65,11 +67,12 @@ function App() {
       </div>
       <div className="flex mr-1 mt-2">
         <input
-          className="flex ml-5 mr-5 border-2 border-solid border-black w-screen"
+          className="flex ml-5 mr-5 mb-5 border-2 border-solid border-black w-screen"
           type="text"
           value={inputForm}
           onChange={(e) => {
             setInputForm(e.target.value);
+            setTimeout(() => console.log(), 1000);
             search([...contacts]);
           }}
         ></input>
@@ -78,7 +81,8 @@ function App() {
         contactList={
           inputForm == "" || inputForm == " " ? contacts : searchcontacts
         }
-        setContactRemove={setAddContacts}
+        setContactRemove1={setAddContacts}
+        setContactRemove2={setSearchContacts}
       ></ListContactTile>
       <ModalAddContact
         showModalContactAdd={showModalContactAdd}
