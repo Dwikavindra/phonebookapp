@@ -12,6 +12,13 @@ function App() {
   const [showModalContactAdd, setShowModalContactAdd] =
     useState<string>("invisible");
   const [contacts, setAddContacts] = useState<Contact[]>([]);
+  const [searchcontacts, setSearchContacts] = useState<Contact[]>([
+    ...contacts,
+  ]);
+  const [inputForm, setInputForm] = useState<string>("");
+  const isNumeric = (val: string): boolean => {
+    return !isNaN(Number(val));
+  };
   function setContactAdd(contact: Contact) {
     let newContacts = [...contacts];
 
@@ -23,6 +30,19 @@ function App() {
     showModalContactAdd == "invisible"
       ? setShowModalContactAdd("visible")
       : setShowModalContactAdd("invisible");
+  }
+  function search(listofcontact: Contact[]) {
+    let newlistsofcontacts: Contact[] = listofcontact.filter((val) => {
+      if (inputForm == "") {
+        return val;
+      } else if (val.name.toLowerCase().includes(inputForm.toLowerCase())) {
+        return val;
+      }
+      if (isNumeric(inputForm[0]) == true) {
+        return val.phoneNumber.toLowerCase().includes(inputForm.toLowerCase());
+      }
+    });
+    setSearchContacts(newlistsofcontacts);
   }
 
   return (
@@ -43,8 +63,21 @@ function App() {
           <h3 className="mt-1  ml-3 mr-4 mb-1 text-xs"> + Add Contact</h3>
         </button>
       </div>
+      <div className="flex mr-1 mt-2">
+        <input
+          className="flex ml-5 mr-5 border-2 border-solid border-black w-screen"
+          type="text"
+          value={inputForm}
+          onChange={(e) => {
+            setInputForm(e.target.value);
+            search([...contacts]);
+          }}
+        ></input>
+      </div>
       <ListContactTile
-        contactList={contacts}
+        contactList={
+          inputForm == "" || inputForm == " " ? contacts : searchcontacts
+        }
         setContactRemove={setAddContacts}
       ></ListContactTile>
       <ModalAddContact
@@ -55,5 +88,4 @@ function App() {
     </div>
   );
 }
-
 export default App;
