@@ -26,21 +26,21 @@ function App() {
     setAddContacts(newContacts);
   }
   function handleShowModalContactAdd() {
-    showModalContactAdd == "invisible"
+    showModalContactAdd === "invisible"
       ? setShowModalContactAdd("visible")
       : setShowModalContactAdd("invisible");
   }
   function search(listofcontact: Contact[]) {
     let newlistsofcontacts: Contact[] = [
       ...listofcontact.filter((val) => {
-        if (inputForm == "") {
+        if (inputForm === "") {
           return val;
         } else if (
-          val.name.toLowerCase().includes(inputForm.toLowerCase()) == true
+          val.name.toLowerCase().includes(inputForm.toLowerCase()) === true
         ) {
           return val;
         }
-        if (isNumeric(inputForm[0]) == true) {
+        if (isNumeric(inputForm[0]) === true) {
           return val.phoneNumber.includes(inputForm.toLowerCase());
         }
       }),
@@ -78,9 +78,9 @@ function App() {
         ></input>
       </div>
       <ListContactTile
-        contactList={
-          inputForm == "" || inputForm == " " ? contacts : searchcontacts
-        }
+        contactList={inputForm === "" ? contacts : searchcontacts}
+        searchContactList={searchcontacts}
+        nonsearchContacList={contacts}
         setContactRemove1={setAddContacts}
         setContactRemove2={setSearchContacts}
       ></ListContactTile>
