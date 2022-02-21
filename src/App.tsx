@@ -86,7 +86,6 @@ function App() {
           }}
         ></input>
       </div>
-
       <ListContactTile
         contactList={inputForm == "" ? getContactFromCookies() : searchcontacts}
         searchContactList={searchcontacts}

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Contact from "./Contact";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Cookies from "js-cookie";
+import ModalUpdateData from "./ModalUpdateData";
 interface contactLists {
   contactList: Contact[];
   searchContactList: Contact[];
@@ -11,15 +12,22 @@ interface contactLists {
   setContactRemove2: Function;
 }
 function ListContactTile(props: contactLists) {
+  const [showModalContactUpdate, setShowModalContactUpdate] =
+    useState<string>("invisible");
+  function handleShowModalContactUpdate() {
+    showModalContactUpdate === "invisible"
+      ? setShowModalContactUpdate("visible")
+      : setShowModalContactUpdate("invisible");
+  }
   function removeContact(id: number) {
     let oldArray: Contact[] = [...props.nonsearchContacList];
     let searchContactList: Contact[] = [...props.searchContactList];
     let newArray: Contact[] = oldArray.filter((items) => items.id != id);
-    let newSearchContacList: Contact[] = searchContactList.filter(
+    let newSearchContactList: Contact[] = searchContactList.filter(
       (items) => items.id != id
     );
     props.setContactRemove1(newArray);
-    props.setContactRemove2(newSearchContacList);
+    props.setContactRemove2(newSearchContactList);
     Cookies.set("contacts", JSON.stringify(newArray), { expires: 7 });
   }
   return (
@@ -41,7 +49,25 @@ function ListContactTile(props: contactLists) {
               >
                 <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
               </button>
+              <button
+                onClick={() => {
+                  setShowModalContactUpdate("visible");
+                }}
+              >
+                Update
+              </button>
             </div>
+            <ModalUpdateData
+              id={element.id}
+              name={element.name}
+              phoneNumber={element.phoneNumber}
+              showModalContactUpdate={showModalContactUpdate}
+              setShowModalContactUpdate={() => handleShowModalContactUpdate()}
+              nonSearchContactList={[...props.nonsearchContacList]}
+              searchContactList={[...props.searchContactList]}
+              setContactList={props.setContactRemove1}
+              setSearchContactList={props.setContactRemove2}
+            ></ModalUpdateData>
           </div>
         );
       })}
