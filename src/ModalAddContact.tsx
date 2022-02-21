@@ -7,7 +7,7 @@ import {
   faCoffee,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-
+import Cookies from "js-cookie";
 type AddContactProps = {
   showModalContactAdd: string;
   setShowModalContactAdd: Function;

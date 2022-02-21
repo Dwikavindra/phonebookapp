@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Contact from "./Contact";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
+import Cookies from "js-cookie";
 interface contactLists {
   contactList: Contact[];
   searchContactList: Contact[];
@@ -19,6 +20,7 @@ function ListContactTile(props: contactLists) {
     );
     props.setContactRemove1(newArray);
     props.setContactRemove2(newSearchContacList);
+    Cookies.set("contacts", JSON.stringify(newArray), { expires: 7 });
   }
   return (
     <div>

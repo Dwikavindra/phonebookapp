@@ -6,7 +6,7 @@ import { faAddressBook, faCoffee } from "@fortawesome/free-solid-svg-icons";
 import ModalAddContact from "./ModalAddContact";
 import ListContactTile from "./listContactsTile";
 import Contact from "./Contact";
-
+import Cookies from "js-cookie";
 function App() {
   document.body.style.background = "#F5F5F5";
   const [showModalContactAdd, setShowModalContactAdd] =
@@ -24,6 +24,7 @@ function App() {
     let newContacts = [...contacts];
     newContacts.push(contact);
     setAddContacts(newContacts);
+    Cookies.set("contacts", JSON.stringify(newContacts), { expires: 7 });
   }
   function handleShowModalContactAdd() {
     showModalContactAdd === "invisible"
@@ -46,6 +47,14 @@ function App() {
       }),
     ];
     setSearchContacts(newlistsofcontacts);
+  }
+  function getContactFromCookies(): Contact[] {
+    let cookieslist = Cookies.get("contacts");
+    if (cookieslist == undefined) {
+      return contacts;
+    } else {
+      return JSON.parse(Cookies.get("contacts") as string) as Contact[];
+    }
   }
 
   return (
@@ -77,8 +86,9 @@ function App() {
           }}
         ></input>
       </div>
+
       <ListContactTile
-        contactList={inputForm === "" ? contacts : searchcontacts}
+        contactList={inputForm == "" ? getContactFromCookies() : searchcontacts}
         searchContactList={searchcontacts}
         nonsearchContacList={contacts}
         setContactRemove1={setAddContacts}
