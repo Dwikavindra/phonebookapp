@@ -12,6 +12,19 @@ interface contactLists {
   setContactRemove2: Function;
 }
 function ListContactTile(props: contactLists) {
+  let individualContact: Contact = {
+    id: 0,
+    name: "",
+    phoneNumber: "",
+  };
+  const [individualContactid, setIndivididualContactid] = useState<number>(
+    individualContact.id
+  );
+  const [individualContactname, setIndivididualContactname] = useState<string>(
+    individualContact.name
+  );
+  const [individualContactphoneNumber, setIndivididualContactphonenumber] =
+    useState<string>(individualContact.name);
   const [showModalContactUpdate, setShowModalContactUpdate] =
     useState<string>("invisible");
   function handleShowModalContactUpdate() {
@@ -32,11 +45,11 @@ function ListContactTile(props: contactLists) {
   }
   return (
     <div>
-      {props.contactList.map((element) => {
+      {props.contactList.map((element, index) => {
         return (
           <div
             className="flex flex-row bg-gray-300 border-2 ml-5 mr-5 "
-            key={element.id}
+            key={index}
           >
             <div className="flex flex-col">
               <h2>{element.name}</h2>
@@ -52,27 +65,30 @@ function ListContactTile(props: contactLists) {
               <button
                 onClick={() => {
                   setShowModalContactUpdate("visible");
+                  setIndivididualContactid(element.id);
+                  setIndivididualContactname(element.name);
+                  setIndivididualContactphonenumber(element.phoneNumber);
                 }}
               >
                 Update
               </button>
             </div>
-            <ModalUpdateData
-              id={element.id}
-              name={element.name}
-              phoneNumber={element.phoneNumber}
-              showModalContactUpdate={showModalContactUpdate}
-              setShowModalContactUpdate={() => handleShowModalContactUpdate()}
-              nonSearchContactList={[...props.nonsearchContacList]}
-              searchContactList={[...props.searchContactList]}
-              setContactList={props.setContactRemove1}
-              setSearchContactList={props.setContactRemove2}
-            ></ModalUpdateData>
           </div>
         );
       })}
+      <ModalUpdateData
+        id={individualContactid}
+        name={individualContactname}
+        phoneNumber={individualContactphoneNumber}
+        showModalContactUpdate={showModalContactUpdate}
+        setShowModalContactUpdate={() => handleShowModalContactUpdate()}
+        nonSearchContactList={[...props.nonsearchContacList]}
+        searchContactList={[...props.searchContactList]}
+        setContactList={props.setContactRemove1}
+        setSearchContactList={props.setContactRemove2}
+      ></ModalUpdateData>
     </div>
   );
 }
-
+//urutan Modalnya berpengaruh kalau di atas ke render atau initialized dulaun kalau di bawah ga
 export default ListContactTile;

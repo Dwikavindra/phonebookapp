@@ -26,33 +26,21 @@ function ModalAddContact(props: AddContactProps) {
   }
   const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [
-    phoneNumberErrorVisibilityLength,
-    setPhoneNumberErrorVisibilityLength,
-  ] = useState<string>("invisible");
-  const [
-    phoneNumberErrorVisibilityInvalidPattern,
-    setPhoneNumberErrorVisibilityInvalidPattern,
-  ] = useState<string>("invisible");
   return (
     <div
       className={`${props.showModalContactAdd} bg-black bg-opacity-50 absolute inset-0 flex justify-center w-screen `}
     >
       <div className=" flex flex-col bg-gray-100 mt-10 h-96">
         <div className=" flex flex-row">
-          <div className=" items-center">
-            <h1>Add Contact</h1>
-          </div>
-          <div className="flex ml-[79%]">
-            <button
-              className="flex inline-text items-end"
-              onClick={() => {
-                props.setShowModalContactAdd();
-              }}
-            >
-              <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
-            </button>
-          </div>
+          <h1>Add Contact</h1>
+          <button
+            className="flex inline-text ml-60"
+            onClick={() => {
+              props.setShowModalContactAdd();
+            }}
+          >
+            <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
+          </button>
         </div>
         <h3 className="mt-10">Name</h3>
         <input
@@ -70,37 +58,13 @@ function ModalAddContact(props: AddContactProps) {
             setPhoneNumber(e.target.value);
           }}
         ></input>
-        <h2 className={`${phoneNumberErrorVisibilityLength} text-red-600`}>
-          Phone Number must be 11 Characters and 15 Characters max
-        </h2>
-        <h2
-          className={`${setPhoneNumberErrorVisibilityInvalidPattern} text-red-600`}
-        >
-          Please Enter a valid number pattern
-        </h2>
         <div className="flex justify-center items-center">
           <button
             className=" mt-10 flex justify-center items-center border-2 bg-blue-500 text-white rounded-lg border-transparent"
             onClick={() => {
-              let regexPhoneNumberPattern: RegExp = new RegExp(
-                "/+?([ -]?d+)+|(d+)([ -]d+)/g"
-              );
-              if (phoneNumber == "") {
-                setPhoneNumberErrorVisibilityLength("invisible");
-                setPhoneNumberErrorVisibilityInvalidPattern("invisible");
-              }
-              if (phoneNumber.length > 15 && phoneNumber.length < 11) {
-                setPhoneNumberErrorVisibilityLength("visible");
-              } else if (regexPhoneNumberPattern.test(phoneNumber) == false) {
-                setPhoneNumberErrorVisibilityInvalidPattern("visible");
-              } else {
-                setPhoneNumberErrorVisibilityLength("invisible");
-                setPhoneNumberErrorVisibilityInvalidPattern("invisible");
-                AddContact(individualContact, name, phoneNumber);
-                setName("");
-                setPhoneNumber("");
-                props.setShowModalContactAdd();
-              }
+              AddContact(individualContact, name, phoneNumber);
+              setName("");
+              setPhoneNumber("");
             }}
           >
             <h3 className="mt-1  ml-3 mr-4 mb-1 text-xs"> Add Contact</h3>
