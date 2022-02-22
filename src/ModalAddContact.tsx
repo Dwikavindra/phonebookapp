@@ -26,9 +26,9 @@ function ModalAddContact(props: AddContactProps) {
   const [showErrorNoname, setErrorNoname] = useState("invisible");
   const [showErrorInvalidLength, setErrorInvalidLength] = useState("invisible");
   const [errorCheckNamePass, setErrorCheckNamePass] = useState<boolean>(false);
-  const [errorCheckNumberPass, setErrorCheckNumberPass] =
+  const [errorCheckNumberLengthPass, setPhoneNumberLengthPass] =
     useState<boolean>(false);
-  const [isPhoneNumberLengthPass, setPhoneNumberLengthPass] =
+  const [errorCheckNumberPatternPass, setErrorCheckNumberPatternPass] =
     useState<boolean>(false);
   function AddContact(contact: Contact, name: string, phone: string) {
     individualContact.name = name;
@@ -46,24 +46,34 @@ function ModalAddContact(props: AddContactProps) {
       setErrorCheckNamePass(false);
     }
   }
-  function ErrorCheckphoneNumber(phoneNumber: string) {
-    let phoneNumberLength = phoneNumber.length;
-    let regex: RegExp = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+) /g;
-    let regexresult: boolean = regex.test(phoneNumber);
+  function ErrorCheckphoneNumberLength(phoneNumber: string) {
+    let phoneNumberLength: number = phoneNumber.length;
     console.log(phoneNumberLength);
-
-    if (phoneNumberLength < 11 || phoneNumberLength > 15) {
-      setErrorInvalidPattern("invisible");
+    let phoneNumberLengthLessThan11: boolean =
+      phoneNumberLength <= 10 ? true : false;
+    let phoneNumberLengthMorethan16: boolean =
+      phoneNumberLength >= 16 ? true : false;
+    if (
+      phoneNumberLengthLessThan11 === true ||
+      phoneNumberLengthMorethan16 === true
+    ) {
+      console.log("entered here");
       setErrorInvalidLength("visible");
+      setPhoneNumberLengthPass(false);
     } else {
+      setErrorInvalidLength("invisible");
       setPhoneNumberLengthPass(true);
     }
+  }
+  function ErrorCheckphoneNumberPattern(phoneNumber: string) {
+    let regex: RegExp = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+) /g;
+    let regexresult: boolean = regex.test(phoneNumber);
     if (regexresult === false) {
-      setErrorInvalidLength("invisible");
       setErrorInvalidPattern("visible");
-    }
-    if (regexresult === true && isPhoneNumberLengthPass === true) {
-      setErrorCheckNumberPass(true);
+      setErrorCheckNumberPatternPass(false);
+    } else {
+      setErrorInvalidPattern("invisible");
+      setErrorCheckNumberPatternPass(true);
     }
   }
   return (
@@ -77,6 +87,9 @@ function ModalAddContact(props: AddContactProps) {
             className="flex inline-text ml-60"
             onClick={() => {
               props.setShowModalContactAdd();
+              setErrorInvalidLength("invisible");
+              setErrorInvalidPattern("invisible");
+              setErrorNoname("invisible");
             }}
           >
             <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
@@ -87,7 +100,10 @@ function ModalAddContact(props: AddContactProps) {
           className="flex ml-2 mr-2 border-2 border-solid border-black"
           type="text"
           value={name}
-          onChange={(e) => setName(e.target.value)}
+          onChange={(e) => {
+            ErrorCheckname(name);
+            setName(e.target.value);
+          }}
         ></input>
         <h3 className={`${showErrorNoname} text-red-500`}>
           Name cannot be empty
@@ -98,6 +114,8 @@ function ModalAddContact(props: AddContactProps) {
           type="text"
           value={phoneNumber}
           onChange={(e) => {
+            ErrorCheckphoneNumberLength(phoneNumber);
+            ErrorCheckphoneNumberPattern(phoneNumber);
             setPhoneNumber(e.target.value);
           }}
         ></input>
@@ -112,10 +130,12 @@ function ModalAddContact(props: AddContactProps) {
             className=" mt-10 flex justify-center items-center border-2 bg-blue-500 text-white rounded-lg border-transparent"
             onClick={() => {
               ErrorCheckname(name);
-              ErrorCheckphoneNumber(phoneNumber);
+              ErrorCheckphoneNumberLength(phoneNumber);
+              ErrorCheckphoneNumberPattern(phoneNumber);
               if (
                 errorCheckNamePass === true &&
-                errorCheckNumberPass === true
+                errorCheckNumberPatternPass === true &&
+                errorCheckNumberLengthPass == true
               ) {
                 setErrorInvalidLength("invisible");
                 setErrorInvalidPattern("invisible");

@@ -28,17 +28,11 @@ function ModalUpdateData(props: UpdateContactProps) {
   const [showErrorNoname, setErrorNoname] = useState("invisible");
   const [showErrorInvalidLength, setErrorInvalidLength] = useState("invisible");
   const [errorCheckNamePass, setErrorCheckNamePass] = useState<boolean>(false);
-  const [errorCheckNumberPass, setErrorCheckNumberPass] =
+  const [errorCheckNumberPatternPass, setErrorCheckNumberPatternPass] =
     useState<boolean>(false);
-  const [isPhoneNumberLengthPass, setPhoneNumberLengthPass] =
+  const [errorCheckNumberLengthPass, setPhoneNumberLengthPass] =
     useState<boolean>(false);
 
-  useEffect(() => {
-    if (props.showModalContactUpdate === "visible") {
-      ErrorCheckname(namemodal);
-      ErrorCheckphoneNumber(phoneNumbermodal);
-    }
-  });
   useEffect(() => {
     //useEffect use it to re render certain elements when called
     setName(props.name);
@@ -82,25 +76,37 @@ function ModalUpdateData(props: UpdateContactProps) {
       setErrorCheckNamePass(false);
     }
   }
-  function ErrorCheckphoneNumber(phoneNumber: string) {
-    let phoneNumberLength = phoneNumber.length;
-    let regex: RegExp = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+) /g;
-    let regexresult: boolean = regex.test(phoneNumber);
-    if (regexresult === true && isPhoneNumberLengthPass === true) {
-      setErrorCheckNumberPass(true);
+  function ErrorCheckphoneNumberLength(phoneNumber: string) {
+    let phoneNumberLength: number = phoneNumber.length;
+    console.log(phoneNumberLength);
+    let phoneNumberLengthLessThan11: boolean =
+      phoneNumberLength <= 10 ? true : false;
+    let phoneNumberLengthMorethan16: boolean =
+      phoneNumberLength >= 16 ? true : false;
+    if (
+      phoneNumberLengthLessThan11 === true ||
+      phoneNumberLengthMorethan16 === true
+    ) {
+      console.log("entered here");
+      setErrorInvalidLength("visible");
+      setPhoneNumberLengthPass(false);
     } else {
-      if (phoneNumberLength < 11 || phoneNumberLength > 15) {
-        setErrorInvalidPattern("invisible");
-        setErrorInvalidLength("visible");
-      } else {
-        setPhoneNumberLengthPass(true);
-      }
-      if (regexresult === false) {
-        setErrorInvalidLength("invisible");
-        setErrorInvalidPattern("visible");
-      }
+      setErrorInvalidLength("invisible");
+      setPhoneNumberLengthPass(true);
     }
   }
+  function ErrorCheckphoneNumberPattern(phoneNumber: string) {
+    let regex: RegExp = /\+?([ -]?\d+)+|\(\d+\)([ -]\d+) /g;
+    let regexresult: boolean = regex.test(phoneNumber);
+    if (regexresult === false) {
+      setErrorInvalidPattern("visible");
+      setErrorCheckNumberPatternPass(false);
+    } else {
+      setErrorInvalidPattern("invisible");
+      setErrorCheckNumberPatternPass(true);
+    }
+  }
+
   return (
     <div
       className={`${props.showModalContactUpdate} bg-black bg-opacity-50 absolute inset-0 flex justify-center w-screen `}
@@ -128,6 +134,7 @@ function ModalUpdateData(props: UpdateContactProps) {
           onChange={(e) => {
             setName("");
             setName(e.target.value);
+            ErrorCheckname(namemodal);
           }}
         ></input>
         <h3 className={`${showErrorNoname} text-red-500`}>
@@ -143,6 +150,8 @@ function ModalUpdateData(props: UpdateContactProps) {
           value={phoneNumbermodal}
           onChange={(e) => {
             setPhoneNumber(e.target.value);
+            ErrorCheckphoneNumberPattern(phoneNumbermodal);
+            ErrorCheckphoneNumberLength(phoneNumbermodal);
           }}
         ></input>
         <h3 className={`${showErrorInvalidPattern} text-red-500`}>
@@ -155,16 +164,10 @@ function ModalUpdateData(props: UpdateContactProps) {
           <button
             className=" mt-10 flex justify-center items-center border-2 bg-blue-500 text-white rounded-lg border-transparent"
             onClick={() => {
-              ErrorCheckname(namemodal);
-              ErrorCheckphoneNumber(phoneNumbermodal);
-              console.log("clicked");
-              console.log(phoneNumbermodal);
-              console.log(namemodal);
-              console.log(errorCheckNamePass);
-              console.log(errorCheckNumberPass);
               if (
                 errorCheckNamePass === true &&
-                errorCheckNumberPass === true
+                errorCheckNumberPatternPass === true &&
+                errorCheckNumberLengthPass === true
               ) {
                 setErrorInvalidLength("invisible");
                 setErrorInvalidPattern("invisible");
@@ -172,8 +175,6 @@ function ModalUpdateData(props: UpdateContactProps) {
                 updateSearchContactList(props.id, namemodal, phoneNumbermodal);
                 UpdateCookies([...props.nonSearchContactList]);
                 props.setShowModalContactUpdate("invisible");
-                //     }
-                //   }
               }
             }}
           >
