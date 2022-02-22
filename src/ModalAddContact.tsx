@@ -51,7 +51,7 @@ function ModalAddContact(props: AddContactProps) {
     multiple: true,
     limitFilesConfig: { max: 1 },
     // minFileSize: 0.1, // in megabytes
-    maxFileSize: 50,
+    maxFileSize: 3,
   });
 
   if (loading) {

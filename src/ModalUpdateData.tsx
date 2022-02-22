@@ -3,6 +3,7 @@ import logo from "./logo.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Contact from "./Contact";
 import Cookies from "js-cookie";
+import { useFilePicker } from "use-file-picker";
 import {
   faAddressBook,
   faCoffee,
@@ -10,6 +11,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 type UpdateContactProps = {
   id: number;
+  img: string;
   name: string;
   phoneNumber: string;
   showModalContactUpdate: string;
@@ -23,16 +25,17 @@ function ModalUpdateData(props: UpdateContactProps) {
   const [namemodal, setName] = useState(props.name);
 
   const [phoneNumbermodal, setPhoneNumber] = useState(props.phoneNumber);
+  const [imgModal, setIMG] = useState(props.img);
   const [showErrorInvalidPattern, setErrorInvalidPattern] =
     useState("invisible");
   const [showErrorNoname, setErrorNoname] = useState("invisible");
   const [showErrorInvalidLength, setErrorInvalidLength] = useState("invisible");
-  const [errorCheckNamePass, setErrorCheckNamePass] = useState<boolean>(false);
+  const [errorCheckNamePass, setErrorCheckNamePass] = useState<boolean>(true);
   const [errorCheckNumberPatternPass, setErrorCheckNumberPatternPass] =
-    useState<boolean>(false);
+    useState<boolean>(true);
   const [errorCheckNumberLengthPass, setPhoneNumberLengthPass] =
-    useState<boolean>(false);
-
+    useState<boolean>(true);
+  const [showImageModal, setImageModal] = useState<string>("invisible");
   useEffect(() => {
     //useEffect use it to re render certain elements when called
     setName(props.name);
@@ -41,27 +44,51 @@ function ModalUpdateData(props: UpdateContactProps) {
     setPhoneNumber(props.phoneNumber);
   }, [props.phoneNumber]);
 
+  useEffect(() => {
+    setIMG(props.img);
+  }, [props.img]);
+  const [openFileSelector, { filesContent, loading, errors }] = useFilePicker({
+    readAs: "DataURL",
+    accept: "image/*",
+    multiple: true,
+    limitFilesConfig: { max: 1 },
+    // minFileSize: 0.1, // in megabytes
+    maxFileSize: 3,
+  });
   function UpdateSessionStorage(contactList: Contact[]) {
+    console.log("sessionstorage activated");
     sessionStorage.setItem("contacts", JSON.stringify(contactList));
   }
-  function updateContactList(id: number, name: string, phone: string) {
+  function updateContactList(
+    id: number,
+    name: string,
+    phone: string,
+    img: string
+  ) {
     let contactList: Contact[] = props.nonSearchContactList;
     contactList.find((item) => {
       if (item.id === id) {
         item.name = name;
         item.phoneNumber = phone;
+        item.img = img;
       }
     });
     console.log(contactList);
     props.setContactList(contactList);
   }
 
-  function updateSearchContactList(id: number, name: string, phone: string) {
+  function updateSearchContactList(
+    id: number,
+    name: string,
+    phone: string,
+    img: string
+  ) {
     let searchContactList: Contact[] = props.searchContactList;
     searchContactList.find((item) => {
       if (item.id === id) {
         item.name = name;
         item.phoneNumber = phone;
+        item.img = img;
       }
     });
     props.setSearchContactList(searchContactList);
@@ -111,7 +138,7 @@ function ModalUpdateData(props: UpdateContactProps) {
     <div
       className={`${props.showModalContactUpdate} bg-black bg-opacity-50 absolute inset-0 flex justify-center w-screen `}
     >
-      <div className=" flex flex-col bg-gray-100 mt-10 h-96">
+      <div className=" flex flex-col bg-gray-100 mt-10 h-5/6">
         <div className=" flex flex-row">
           <h1>Update Data</h1>
           <button
@@ -160,10 +187,49 @@ function ModalUpdateData(props: UpdateContactProps) {
         <h3 className={`${showErrorInvalidLength} text-red-500`}>
           Invalid Length must be 11 characters at least and 15 at most
         </h3>
-        <div className="flex justify-center items-center">
+        <div className="flex flex-col justify-center items-center">
+          <div className="flex flex-col justify-center items-center">
+            <button
+              className="mb-20"
+              onClick={() => {
+                openFileSelector();
+              }}
+            >
+              Add Image
+            </button>
+            <div className={`flex flex-col justify-center item-center`}>
+              <div className="flex flex-row justify-center items-center w-20 h-10">
+                <img
+                  className="object-scale-down items-center"
+                  src={imgModal}
+                ></img>
+              </div>
+            </div>
+
+            {filesContent.map((file, index) => {
+              return (
+                <div
+                  className=" flex flex-col justify-center items-center"
+                  key={index}
+                >
+                  <div className=" flex flex-row justify-center items-center w-20 h-10">
+                    <img
+                      className="object-scale-down items-center"
+                      alt={file.name}
+                      src={file.content}
+                    ></img>
+                  </div>
+                  <br />
+                </div>
+              );
+            })}
+          </div>
           <button
             className=" mt-10 flex justify-center items-center border-2 bg-blue-500 text-white rounded-lg border-transparent"
             onClick={() => {
+              console.log(errorCheckNamePass);
+              console.log(errorCheckNumberLengthPass);
+              console.log(errorCheckNumberPatternPass);
               if (
                 errorCheckNamePass === true &&
                 errorCheckNumberPatternPass === true &&
@@ -171,8 +237,18 @@ function ModalUpdateData(props: UpdateContactProps) {
               ) {
                 setErrorInvalidLength("invisible");
                 setErrorInvalidPattern("invisible");
-                updateContactList(props.id, namemodal, phoneNumbermodal);
-                updateSearchContactList(props.id, namemodal, phoneNumbermodal);
+                updateContactList(
+                  props.id,
+                  namemodal,
+                  phoneNumbermodal,
+                  filesContent[0].content
+                );
+                updateSearchContactList(
+                  props.id,
+                  namemodal,
+                  phoneNumbermodal,
+                  filesContent[0].content
+                );
                 UpdateSessionStorage([...props.nonSearchContactList]);
                 props.setShowModalContactUpdate("invisible");
               }

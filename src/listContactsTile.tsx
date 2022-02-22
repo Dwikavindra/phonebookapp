@@ -25,6 +25,9 @@ function ListContactTile(props: contactLists) {
   );
   const [individualContactphoneNumber, setIndivididualContactphonenumber] =
     useState<string>(individualContact.name);
+  const [individualIMG, setIndividualIMG] = useState<string>(
+    individualContact.img
+  );
   const [showModalContactUpdate, setShowModalContactUpdate] =
     useState<string>("invisible");
   function handleShowModalContactUpdate() {
@@ -73,6 +76,7 @@ function ListContactTile(props: contactLists) {
                   setIndivididualContactid(element.id);
                   setIndivididualContactname(element.name);
                   setIndivididualContactphonenumber(element.phoneNumber);
+                  setIndividualIMG(element.img);
                 }}
               >
                 Update
@@ -83,6 +87,7 @@ function ListContactTile(props: contactLists) {
       })}
       <ModalUpdateData
         id={individualContactid}
+        img={individualIMG}
         name={individualContactname}
         phoneNumber={individualContactphoneNumber}
         showModalContactUpdate={showModalContactUpdate}
