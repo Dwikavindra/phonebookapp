@@ -27,30 +27,37 @@ function ModalUpdateData(props: UpdateContactProps) {
     useState("invisible");
   const [showErrorInvalidLength, setErrorInvalidLength] = useState("invisible");
   useEffect(() => {
+    //useEffect use it to re render certain elements when called
     setName(props.name);
-  }, [props.name]);
+  }, [props.name]); //the other property tells use Effect to watchout if there is change then re render
   useEffect(() => {
     setPhoneNumber(props.phoneNumber);
   }, [props.phoneNumber]);
 
-  function UpdateData(id: number, name: string, phone: string) {
-    let contactList: Contact[] = props.nonSearchContactList;
-    let searchContactList: Contact[] = props.searchContactList;
-    for (let i = 0; i < contactList.length; i++) {
-      if (contactList[i].id == id) {
-        contactList[i].name = name;
-        contactList[i].phoneNumber = phone;
-      }
-    }
-    for (let i = 0; i < searchContactList.length; i++) {
-      if (searchContactList[i].id == id) {
-        searchContactList[i].name = name;
-        searchContactList[i].phoneNumber = phone;
-      }
-    }
-    props.setContactList(contactList);
-    props.setSearchContactList(searchContactList);
+  function UpdateCookies(contactList: Contact[]) {
     Cookies.set("contacts", JSON.stringify(contactList), { expires: 7 });
+  }
+  function updateContactList(id: number, name: string, phone: string) {
+    let contactList: Contact[] = props.nonSearchContactList;
+    contactList.find((item) => {
+      if (item.id == id) {
+        item.name = name;
+        item.phoneNumber = phone;
+      }
+    });
+    console.log(contactList);
+    props.setContactList(contactList);
+  }
+
+  function updateSearchContactList(id: number, name: string, phone: string) {
+    let searchContactList: Contact[] = props.searchContactList;
+    searchContactList.find((item) => {
+      if (item.id == id) {
+        item.name = name;
+        item.phoneNumber = phone;
+      }
+    });
+    props.setSearchContactList(searchContactList);
   }
   return (
     <div
@@ -112,7 +119,9 @@ function ModalUpdateData(props: UpdateContactProps) {
               //     } else {
               //       setErrorInvalidLength("invisible");
               //       setErrorInvalidPattern("invisible");
-              UpdateData(props.id, namemodal, phoneNumbermodal);
+              updateContactList(props.id, namemodal, phoneNumbermodal);
+              updateSearchContactList(props.id, namemodal, phoneNumbermodal);
+              UpdateCookies([...props.nonSearchContactList]);
               props.setShowModalContactUpdate("invisible");
               //     }
               //   }

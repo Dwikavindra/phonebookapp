@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -48,12 +48,17 @@ function App() {
     ];
     setSearchContacts(newlistsofcontacts);
   }
-  function getContactFromCookies(): Contact[] {
+  useEffect(() => {
+    getContactFromCookies();
+  }, []);
+  function getContactFromCookies() {
     let cookieslist = Cookies.get("contacts");
     if (cookieslist == undefined) {
       return contacts;
     } else {
-      return JSON.parse(Cookies.get("contacts") as string) as Contact[];
+      setAddContacts(
+        JSON.parse(Cookies.get("contacts") as string) as Contact[]
+      );
     }
   }
 
@@ -87,7 +92,7 @@ function App() {
         ></input>
       </div>
       <ListContactTile
-        contactList={inputForm == "" ? getContactFromCookies() : searchcontacts}
+        contactList={inputForm == "" ? contacts : searchcontacts}
         searchContactList={searchcontacts}
         nonsearchContacList={contacts}
         setContactRemove1={setAddContacts}
