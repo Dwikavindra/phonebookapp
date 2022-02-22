@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import logo from "./logo.svg";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Contact from "./Contact";
+import { useFilePicker } from "use-file-picker";
 import {
   faAddressBook,
   faCoffee,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import Cookies from "js-cookie";
+import { isReturnStatement } from "typescript";
 type AddContactProps = {
   showModalContactAdd: string;
   setShowModalContactAdd: Function;
@@ -15,25 +16,50 @@ type AddContactProps = {
 };
 function ModalAddContact(props: AddContactProps) {
   let individualContact: Contact = {
+    img: "",
     id: Math.floor(Math.random() * 1000),
     name: "",
     phoneNumber: "",
   };
-  const [name, setName] = useState("");
-  const [phoneNumber, setPhoneNumber] = useState("");
+  const [name, setName] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState<string>("");
+  const [img, setIMG] = useState<string>("");
   const [showErrorInvalidPattern, setErrorInvalidPattern] =
-    useState("invisible");
-  const [showErrorNoname, setErrorNoname] = useState("invisible");
-  const [showErrorInvalidLength, setErrorInvalidLength] = useState("invisible");
+    useState<string>("invisible");
+  const [showErrorNoname, setErrorNoname] = useState<string>("invisible");
+  const [showErrorInvalidLength, setErrorInvalidLength] =
+    useState<string>("invisible");
   const [errorCheckNamePass, setErrorCheckNamePass] = useState<boolean>(false);
   const [errorCheckNumberLengthPass, setPhoneNumberLengthPass] =
     useState<boolean>(false);
   const [errorCheckNumberPatternPass, setErrorCheckNumberPatternPass] =
     useState<boolean>(false);
-  function AddContact(contact: Contact, name: string, phone: string) {
+  function AddContact(
+    contact: Contact,
+    name: string,
+    phone: string,
+    img: string
+  ) {
+    individualContact.img = img;
     individualContact.name = name;
     individualContact.phoneNumber = phone;
     props.setContactAdd(individualContact);
+  }
+  const [openFileSelector, { filesContent, loading, errors }] = useFilePicker({
+    readAs: "DataURL",
+    accept: "image/*",
+    multiple: true,
+    limitFilesConfig: { max: 1 },
+    // minFileSize: 0.1, // in megabytes
+    maxFileSize: 50,
+  });
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (errors.length) {
+    return <div>Error...</div>;
   }
 
   function ErrorCheckname(name: string) {
@@ -78,9 +104,9 @@ function ModalAddContact(props: AddContactProps) {
   }
   return (
     <div
-      className={`${props.showModalContactAdd} bg-black bg-opacity-50 absolute inset-0 flex justify-center w-screen `}
+      className={`${props.showModalContactAdd} bg-black bg-opacity-50 absolute inset-0 flex justify-center w-screen  `}
     >
-      <div className=" flex flex-col bg-gray-100 mt-10 h-96">
+      <div className=" flex flex-col bg-gray-100 mt-10 h-5/6">
         <div className=" flex flex-row">
           <h1>Add Contact</h1>
           <button
@@ -90,6 +116,7 @@ function ModalAddContact(props: AddContactProps) {
               setErrorInvalidLength("invisible");
               setErrorInvalidPattern("invisible");
               setErrorNoname("invisible");
+              filesContent.pop();
             }}
           >
             <FontAwesomeIcon icon={faXmark}></FontAwesomeIcon>
@@ -125,6 +152,34 @@ function ModalAddContact(props: AddContactProps) {
         <h3 className={`${showErrorInvalidLength} text-red-500`}>
           Invalid Length must be 11 characters at least and 15 at most
         </h3>
+        <div className="flex flex-col justify-center items-center">
+          <button
+            className="mb-20"
+            onClick={() => {
+              openFileSelector();
+            }}
+          >
+            Add Image
+          </button>
+          {filesContent.map((file, index) => {
+            console.log(file.content);
+            return (
+              <div
+                className=" flex-col justify-center items-center"
+                key={index}
+              >
+                <div className=" flex flex-row justify-center items-center w-20 h-10">
+                  <img
+                    className="object-scale-down items-center"
+                    alt={file.name}
+                    src={file.content}
+                  ></img>
+                </div>
+                <br />
+              </div>
+            );
+          })}
+        </div>
         <div className="flex justify-center items-center">
           <button
             className=" mt-10 flex justify-center items-center border-2 bg-blue-500 text-white rounded-lg border-transparent"
@@ -140,10 +195,17 @@ function ModalAddContact(props: AddContactProps) {
                 setErrorInvalidLength("invisible");
                 setErrorInvalidPattern("invisible");
                 setErrorNoname("invisible");
-                AddContact(individualContact, name, phoneNumber);
+
+                AddContact(
+                  individualContact,
+                  name,
+                  phoneNumber,
+                  filesContent[0].content
+                );
                 setName("");
                 setPhoneNumber("");
-                props.setShowModalContactAdd("invisble");
+                props.setShowModalContactAdd("invisible");
+                filesContent.pop();
               }
             }}
           >

@@ -22,9 +22,10 @@ function App() {
   };
   function setContactAdd(contact: Contact) {
     let newContacts = [...contacts];
+    console.log(contact);
     newContacts.push(contact);
     setAddContacts(newContacts);
-    Cookies.set("contacts", JSON.stringify(newContacts), { expires: 7 });
+    sessionStorage.setItem("contacts", JSON.stringify(newContacts));
   }
   function handleShowModalContactAdd() {
     showModalContactAdd === "invisible"
@@ -49,16 +50,14 @@ function App() {
     setSearchContacts(newlistsofcontacts);
   }
   useEffect(() => {
-    getContactFromCookies();
+    getContactFromSessionStorage();
   }, []);
-  function getContactFromCookies() {
-    let cookieslist = Cookies.get("contacts");
-    if (cookieslist == undefined) {
+  function getContactFromSessionStorage() {
+    let cookieslist = sessionStorage.getItem("contacts");
+    if (cookieslist == null) {
       return contacts;
     } else {
-      setAddContacts(
-        JSON.parse(Cookies.get("contacts") as string) as Contact[]
-      );
+      setAddContacts(JSON.parse(cookieslist) as Contact[]);
     }
   }
 

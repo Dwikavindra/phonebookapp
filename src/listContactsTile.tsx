@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import Contact from "./Contact";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import Cookies from "js-cookie";
 import ModalUpdateData from "./ModalUpdateData";
 interface contactLists {
   contactList: Contact[];
@@ -13,6 +12,7 @@ interface contactLists {
 }
 function ListContactTile(props: contactLists) {
   let individualContact: Contact = {
+    img: "",
     id: 0,
     name: "",
     phoneNumber: "",
@@ -41,16 +41,21 @@ function ListContactTile(props: contactLists) {
     );
     props.setContactRemove1(newArray);
     props.setContactRemove2(newSearchContactList);
-    Cookies.set("contacts", JSON.stringify(newArray), { expires: 7 });
+    sessionStorage.setItem("contacts", JSON.stringify(newArray));
   }
   return (
-    <div>
+    <div className="flex flex-col">
       {props.contactList.map((element, index) => {
         return (
           <div
             className="flex flex-row bg-gray-300 border-2 ml-5 mr-5 "
             key={index}
           >
+            <img
+              className="w-20 h-10 text-sm object-cover"
+              alt="Photo not found"
+              src={element.img}
+            ></img>
             <div className="flex flex-col">
               <h2>{element.name}</h2>
               <h3>{element.phoneNumber}</h3>

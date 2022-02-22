@@ -41,8 +41,8 @@ function ModalUpdateData(props: UpdateContactProps) {
     setPhoneNumber(props.phoneNumber);
   }, [props.phoneNumber]);
 
-  function UpdateCookies(contactList: Contact[]) {
-    Cookies.set("contacts", JSON.stringify(contactList), { expires: 7 });
+  function UpdateSessionStorage(contactList: Contact[]) {
+    sessionStorage.setItem("contacts", JSON.stringify(contactList));
   }
   function updateContactList(id: number, name: string, phone: string) {
     let contactList: Contact[] = props.nonSearchContactList;
@@ -173,7 +173,7 @@ function ModalUpdateData(props: UpdateContactProps) {
                 setErrorInvalidPattern("invisible");
                 updateContactList(props.id, namemodal, phoneNumbermodal);
                 updateSearchContactList(props.id, namemodal, phoneNumbermodal);
-                UpdateCookies([...props.nonSearchContactList]);
+                UpdateSessionStorage([...props.nonSearchContactList]);
                 props.setShowModalContactUpdate("invisible");
               }
             }}
